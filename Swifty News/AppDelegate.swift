@@ -9,31 +9,29 @@
 import UIKit
 
 @UIApplicationMain
-
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: NSDictionary?) -> Bool {
-        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+        
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window!.backgroundColor = UIColor.whiteColor()
         
-        // Base view controller.
-        let tableViewController = AINewsTableViewController()
-        let navigationController = UINavigationController(rootViewController: tableViewController);
+        let tableViewController = NewsTableViewController()
+        let navigationController = UINavigationController(rootViewController: tableViewController)
         let splitViewController = UISplitViewController()
         splitViewController.viewControllers = [navigationController]
-        self.window!.rootViewController = splitViewController;
+        window!.rootViewController = splitViewController
         
-        // Navigation bar customization.
+        // Customization
         UINavigationBar.appearance().titleTextAttributes = [
-            NSFontAttributeName : UIFont(name: "Avenir-Medium", size: 18.0),
-            NSForegroundColorAttributeName: UIColor(white: 0.25, alpha: 1.0)
+            NSFontAttributeName : UIFont(name: "Avenir-Medium", size: 18.0)!,
+            NSForegroundColorAttributeName : UIColor(white: 0.25, alpha: 1.0)
         ]
         
-        self.window!.makeKeyAndVisible()
+        window!.makeKeyAndVisible()
         return true
     }
-    
 }
 

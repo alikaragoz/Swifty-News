@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "3A4789CFBBA22FF847E7F8ECCF7203CDB48DCCDD",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "3A4789CFBBA22FF847E7F8ECCF7203CDB48DCCDD" : 0,
+    "A2F96B8E-15F8-41F7-885F-846C4FB0C17B" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "AA3EA95B-D2A4-4AE6-A68D-6276A0BA76F4",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "3A4789CFBBA22FF847E7F8ECCF7203CDB48DCCDD" : "Swifty%20News",
+    "A2F96B8E-15F8-41F7-885F-846C4FB0C17B" : "Swifty News"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Swifty News",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Swifty News.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/alikaragoz\/Swifty-News.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3A4789CFBBA22FF847E7F8ECCF7203CDB48DCCDD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/alikaragoz\/Swifty-News.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A2F96B8E-15F8-41F7-885F-846C4FB0C17B"
+    }
+  ]
+}
