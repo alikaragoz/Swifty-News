@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RealmSwift
 
 struct FeedProvider {
     
@@ -17,7 +18,7 @@ struct FeedProvider {
         case InvalidJSON
     }
     
-    static func fetchFeed(completion: ([[String:AnyObject]]?, error: FeedProviderError?) -> Void) {
+    static func fetchFeed(completion: ([Entry]?, error: FeedProviderError?)-> Void) {
         
         // Fetching some data from hacker news.
         let session = NSURLSession.sharedSession()
@@ -33,8 +34,32 @@ struct FeedProvider {
             if let JSONEntries = JSONEntries as? [String: AnyObject],
                 let responseData = JSONEntries["responseData"] as? [String: AnyObject],
                 let feed = responseData["feed"] as? [String: AnyObject],
-                let entries = feed["entries"] as? [[String: AnyObject]] {
-                    completion(entries, error: nil)
+                let items = feed["entries"] as? [[String: AnyObject]] {
+                    var entries = [Entry]()
+                    let realm = try! Realm()
+                
+                    for item in items{
+                        let entry = Entry()
+                        entry.title = (item["title"] as? String)!
+                        entry.content = (item["content"] as? String)!
+                    
+                        let rawDate = item["publishedDate"] as? String
+                        let dateFormatter = NSDateFormatter()
+                        dateFormatter.dateStyle = NSDateFormatterStyle.FullStyle
+                        if let date = dateFormatter.dateFromString(rawDate!){
+                            entry.publishedDate = date
+                        }
+       
+                        entry.contentSnippet = (item["contentSnippet"] as? String)!
+                        entry.link = (item["link"] as? String)!
+                        
+                        //                    entry.categories = (item["categories"] as? List<String>)!
+                        try! realm.write {
+                            realm.add(entry)
+                        }
+                        entries.append(entry)
+                    }
+                    completion(nil, error: nil)
             } else {
                 completion(nil, error: .InvalidJSON)
             }

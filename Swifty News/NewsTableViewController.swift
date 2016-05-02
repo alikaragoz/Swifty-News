@@ -8,10 +8,12 @@
 
 import UIKit
 import SafariServices
+import RealmSwift
 
 class NewsTableViewController: UITableViewController {
     
-    var news = [[String: AnyObject]]()
+    let news = try! Realm().objects(Entry).sorted("publishedDate")
+    var notificationToken: NotificationToken?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,12 +24,37 @@ class NewsTableViewController: UITableViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorInset = UIEdgeInsets(top: 0.0, left: 5.0, bottom: 0.0, right: 5.0)
         
-        FeedProvider.fetchFeed { entries, error in
-            if let entries = entries {
-                self.news = entries
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.tableView.reloadData()
-                }
+        self.refresh()
+        FeedProvider.fetchFeed {_, error in
+            guard (error == nil) else{
+                print("We have an error ", error.debugDescription)
+                return
+            }
+        }
+    }
+    
+    private func refresh(){
+        self.notificationToken = news.addNotificationBlock { (changes: RealmCollectionChange) in
+            switch changes {
+            case .Initial:
+                // Results are now populated and can be accessed without blocking the UI
+                self.tableView.reloadData()
+                break
+            case .Update(_, let deletions, let insertions, let modifications):
+                // Query results have changed, so apply them to the TableView
+                self.tableView.beginUpdates()
+                self.tableView.insertRowsAtIndexPaths(insertions.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self.tableView.deleteRowsAtIndexPaths(deletions.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self.tableView.reloadRowsAtIndexPaths(modifications.map { NSIndexPath(forRow: $0, inSection: 0) },
+                    withRowAnimation: .Automatic)
+                self.tableView.endUpdates()
+                break
+            case .Error(let err):
+                // An error occurred while opening the Realm file on the background worker thread
+                fatalError("\(err)")
+                break
             }
         }
     }
