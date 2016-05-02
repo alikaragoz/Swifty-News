@@ -42,7 +42,9 @@ struct FeedProvider {
                         let entry = Entry()
                         entry.title = (item["title"] as? String)!
                         entry.content = (item["content"] as? String)!
-                    
+                        let authorRaw = (item["author"] as? String)!
+                        entry.author = authorRaw.html2String.html2String
+                        
                         let rawDate = item["publishedDate"] as? String
                         let dateFormatter = NSDateFormatter()
                         dateFormatter.dateFormat = "E, dd MMM yyyy HH:mm:ss zzzz"
@@ -66,5 +68,23 @@ struct FeedProvider {
         })
         
         dataTask.resume()
+    }
+}
+
+extension String {
+    
+    var html2AttributedString: NSAttributedString? {
+        guard
+            let data = dataUsingEncoding(NSUTF8StringEncoding)
+            else { return nil }
+        do {
+            return try NSAttributedString(data: data, options: [NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute:NSUTF8StringEncoding], documentAttributes: nil)
+        } catch let error as NSError {
+            print(error.localizedDescription)
+            return  nil
+        }
+    }
+    var html2String: String {
+        return html2AttributedString?.string ?? ""
     }
 }
