@@ -11,7 +11,7 @@ import RealmSwift
 
 struct FeedProvider {
     
-    static let urlString = "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=30&q=http%3A%2F%2Fnews.ycombinator.com%2Frss%3F"
+    static let urlString = "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=100&q=http://feeds.feedburner.com/ProgrammableWeb"
     
     enum FeedProviderError: ErrorType {
         case InvalidData
@@ -45,10 +45,10 @@ struct FeedProvider {
                     
                         let rawDate = item["publishedDate"] as? String
                         let dateFormatter = NSDateFormatter()
-                        dateFormatter.dateStyle = NSDateFormatterStyle.FullStyle
-                        if let date = dateFormatter.dateFromString(rawDate!){
-                            entry.publishedDate = date
-                        }
+                        dateFormatter.dateFormat = "E, dd MMM yyyy HH:mm:ss zzzz"
+                        let date = dateFormatter.dateFromString(rawDate!)
+                        entry.publishedDate = date!
+                        
        
                         entry.contentSnippet = (item["contentSnippet"] as? String)!
                         entry.link = (item["link"] as? String)!

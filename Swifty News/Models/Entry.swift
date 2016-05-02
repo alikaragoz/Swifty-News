@@ -10,8 +10,8 @@ import RealmSwift
 
 class Entry: Object {
     dynamic var title = ""
-    dynamic var author = ""
     dynamic var link = ""
+    dynamic var author = ""
     dynamic var publishedDate = NSDate(timeIntervalSince1970: 1)
     dynamic var contentSnippet = ""
     dynamic var content = ""
