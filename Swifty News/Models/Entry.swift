@@ -16,4 +16,8 @@ class Entry: Object {
     dynamic var contentSnippet = ""
     dynamic var content = ""
     let categories = List<Category>()
+    
+    override static func primaryKey() -> String? {
+        return "link"
+    }
 }

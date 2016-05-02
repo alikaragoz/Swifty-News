@@ -57,7 +57,7 @@ struct FeedProvider {
                         
                         //                    entry.categories = (item["categories"] as? List<String>)!
                         try! realm.write {
-                            realm.add(entry)
+                            realm.add(entry, update: true)
                         }
                         entries.append(entry)
                     }
