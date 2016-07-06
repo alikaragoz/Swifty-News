@@ -7,17 +7,18 @@
 //
 
 import Foundation
+import RealmSwift
 
 struct FeedProvider {
     
-    static let urlString = "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=30&q=http%3A%2F%2Fnews.ycombinator.com%2Frss%3F"
+    static let urlString = "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=100&q=http://feeds.feedburner.com/ProgrammableWeb"
     
     enum FeedProviderError: ErrorType {
         case InvalidData
         case InvalidJSON
     }
     
-    static func fetchFeed(completion: ([[String:AnyObject]]?, error: FeedProviderError?) -> Void) {
+    static func fetchFeed(completion: ([Entry]?, error: FeedProviderError?)-> Void) {
         
         // Fetching some data from hacker news.
         let session = NSURLSession.sharedSession()
@@ -33,13 +34,57 @@ struct FeedProvider {
             if let JSONEntries = JSONEntries as? [String: AnyObject],
                 let responseData = JSONEntries["responseData"] as? [String: AnyObject],
                 let feed = responseData["feed"] as? [String: AnyObject],
-                let entries = feed["entries"] as? [[String: AnyObject]] {
-                    completion(entries, error: nil)
+                let items = feed["entries"] as? [[String: AnyObject]] {
+                    var entries = [Entry]()
+                    let realm = try! Realm()
+                
+                    for item in items{
+                        let entry = Entry()
+                        entry.title = (item["title"] as? String)!
+                        entry.content = (item["content"] as? String)!
+                        let authorRaw = (item["author"] as? String)!
+                        entry.author = authorRaw.html2String.html2String
+                        
+                        let rawDate = item["publishedDate"] as? String
+                        let dateFormatter = NSDateFormatter()
+                        dateFormatter.dateFormat = "E, dd MMM yyyy HH:mm:ss zzzz"
+                        let date = dateFormatter.dateFromString(rawDate!)
+                        entry.publishedDate = date!
+                        
+       
+                        entry.contentSnippet = (item["contentSnippet"] as? String)!
+                        entry.link = (item["link"] as? String)!
+                        
+                        //                    entry.categories = (item["categories"] as? List<String>)!
+                        try! realm.write {
+                            realm.add(entry, update: true)
+                        }
+                        entries.append(entry)
+                    }
+                    completion(nil, error: nil)
             } else {
                 completion(nil, error: .InvalidJSON)
             }
         })
         
         dataTask.resume()
+    }
+}
+
+extension String {
+    
+    var html2AttributedString: NSAttributedString? {
+        guard
+            let data = dataUsingEncoding(NSUTF8StringEncoding)
+            else { return nil }
+        do {
+            return try NSAttributedString(data: data, options: [NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType,NSCharacterEncodingDocumentAttribute:NSUTF8StringEncoding], documentAttributes: nil)
+        } catch let error as NSError {
+            print(error.localizedDescription)
+            return  nil
+        }
+    }
+    var html2String: String {
+        return html2AttributedString?.string ?? ""
     }
 }
